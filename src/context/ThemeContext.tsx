@@ -6,7 +6,7 @@ interface ThemeContextType {
   currentMember: MemberTheme;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
-  switchMember: (memberId: 'mine' | 'asmi' | 'sudhan' | 'sathik') => void;
+  switchMember: (memberId: 'mine' | 'asmi' | 'sudhan' | 'sathik' | 'hari') => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -22,7 +22,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (cleanPath === '/asmi') return MEMBERS_DATA.asmi;
     if (cleanPath === '/sudhan') return MEMBERS_DATA.sudhan;
     if (cleanPath === '/sathik') return MEMBERS_DATA.sathik;
-    if (cleanPath === '/hari') return MEMBERS_DATA.sudhan;
+    if (cleanPath === '/hari') return MEMBERS_DATA.hari;
     if (cleanPath === '/abdul' || cleanPath === '/abdul-kalam' || cleanPath === '/mine') return MEMBERS_DATA.mine;
     return MEMBERS_DATA.mine;
   };
@@ -32,7 +32,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     [location.pathname]
   );
 
-  const switchMember = (memberId: 'mine' | 'asmi' | 'sudhan' | 'sathik') => {
+  const switchMember = (memberId: 'mine' | 'asmi' | 'sudhan' | 'sathik' | 'hari') => {
     const target = MEMBERS_DATA[memberId];
     if (target) {
       navigate(target.route);

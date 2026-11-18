@@ -1,5 +1,5 @@
 export interface MemberTheme {
-  id: 'mine' | 'asmi' | 'sudhan' | 'sathik';
+  id: 'mine' | 'asmi' | 'sudhan' | 'sathik' | 'hari';
   route: string;
   memberName: string;
   memberRole: string;
@@ -128,6 +128,32 @@ export const MEMBERS_DATA: Record<string, MemberTheme> = {
       contrastText: '#FFFFFF',
       contrastTextMuted: '#E6D3D5',
       contrastBorder: 'rgba(213, 181, 184, 0.25)',
+    },
+  },
+  hari: {
+    id: 'hari',
+    route: '/hari',
+    memberName: 'Hari',
+    memberRole: 'Senior Agentic AI Engineer & LLMOps Specialist',
+    memberBio: '3+ years building high-throughput Groq LPU streaming inference, multi-agent communication protocols, and sub-100ms enterprise LLMOps.',
+    badge: 'HARI EDITION • ENTERPRISE GROQ & MULTI-AGENT TRACK',
+    paletteName: '05. Emerald Slate × Cool Steel',
+    personality: 'Fast, precise, performance-driven and modern.',
+    colors: {
+      dominant: '#059669',       // Emerald Green
+      background: '#F0FDF4',     // Mint Light
+      typography: '#064E3B',     // Deep Pine
+      supporting: '#A7F3D0',     // Light Mint Border
+      surface: '#FFFFFF',
+      surfaceMuted: '#DCFCE7',
+      textMuted: '#047857',
+      glow: 'rgba(5, 150, 105, 0.25)',
+      dominantHover: '#047857',
+      contrastBg: '#064E3B',
+      contrastSurface: '#022C22',
+      contrastText: '#FFFFFF',
+      contrastTextMuted: '#A7F3D0',
+      contrastBorder: 'rgba(167, 243, 208, 0.25)',
     },
   },
 };

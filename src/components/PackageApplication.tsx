@@ -110,13 +110,14 @@ export const PackageApplication: React.FC<PackageApplicationProps> = ({
     setSubmissionError(null);
 
     const result = await submitWeb3Form({
-      subject: `New Cohort Application: ${selectedPackage} - ${formData.name}`,
-      from_name: `LevLox ${currentMember.memberName} Funnel`,
+      subject: `[${currentMember.memberName} Track] Cohort Application: ${selectedPackage} - ${formData.name}`,
+      from_name: `LevLox - ${currentMember.memberName}`,
+      'Trainer / Mentor Assigned': currentMember.memberName,
+      'Trainer Portal Track': `${currentMember.memberName} (${window.location.pathname})`,
       'Candidate Name': formData.name,
-      'Phone Number': formData.phone,
+      'Phone Number (WhatsApp)': formData.phone,
       'Email Address': formData.email,
-      'Selected Track': selectedPackage,
-      'Assigned Mentor': currentMember.memberName,
+      'Selected Package / Track': selectedPackage,
       'Work Experience': formData.workExperience,
       'Current LPA': formData.currentLpa,
       'Can Commit 2 Hours Daily': formData.spend2HoursDaily,

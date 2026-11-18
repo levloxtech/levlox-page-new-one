@@ -214,6 +214,45 @@ const DEFAULT_CONTENT_BY_MEMBER: Record<string, TrainerContent> = {
       },
     ],
   },
+  hari: {
+    heroVideoUrl: '',
+    heroDuration: '14:50',
+    nextWorkshop: {
+      ...DEFAULT_WORKSHOP,
+      id: 'ws-hari-01',
+      instructor: 'Hari',
+      title: 'Sub-100ms Inference & Groq LPU Streaming Swarms',
+      projectName: 'High-Throughput Streaming Agent Architecture with Llama 3.3',
+      date: 'Sunday, December 6, 2026',
+      time: '8:00 PM – 10:00 PM IST',
+      duration: '2 Hours Live LPU Benchmarking + Q&A',
+      platform: 'Live on Zoom + Groq LPU Sandbox Access',
+      seatsRemaining: 22,
+      totalSeats: 120,
+      recordingUrl: '',
+    },
+    previousWorkshop: {
+      title: '500+ Tokens/Sec Streaming Inference Under Concurrency',
+      projectName: 'Full-Stack Groq Agent Integration & Latency Benchmarks',
+      videoUrl: '',
+      duration: '1h 20m 15s',
+      attendeesCount: 420,
+    },
+    testimonials: [
+      {
+        id: 'hari-test-1',
+        name: 'Venkatesh Rao',
+        role: 'Senior Backend Engineer → AI Streaming Specialist (32 LPA)',
+        rating: 5.0,
+        feedback: "Hari's deep architecture session on Groq LPUs and sub-100ms multi-agent pipelines showed me how top tier companies deploy ultra-low latency AI.",
+        initial: 'V',
+        imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=700&q=85',
+        videoDuration: '1:40',
+        hasVideo: true,
+        linkedinUrl: 'https://linkedin.com',
+      },
+    ],
+  },
 };
 
 interface AdminContentContextType {

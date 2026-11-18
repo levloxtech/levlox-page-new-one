@@ -73,15 +73,16 @@ export const NextWorkshopRegistration: React.FC = () => {
     setSubmissionError(null);
 
     const result = await submitWeb3Form({
-      subject: `Workshop Registration: ${workshop.title} - ${formData.name}`,
-      from_name: `LevLox Workshop (${currentMember.memberName})`,
+      subject: `[${currentMember.memberName} Track] Workshop Registration: ${formData.name}`,
+      from_name: `LevLox - ${currentMember.memberName}`,
+      'Trainer / Lead Engineer': currentMember.memberName,
+      'Trainer Portal Track': `${currentMember.memberName} (${window.location.pathname})`,
       'Registrant Name': formData.name,
       'Email Address': formData.email,
-      'Phone Number': formData.mobile,
+      'Mobile Number (WhatsApp)': formData.mobile,
       'Profile Status': formData.roleType === 'working_professional' ? 'Working Professional' : 'Student / Aspirant',
       'Workshop Title': workshop.title,
-      'Workshop Date': workshop.date,
-      'Instructor': instructorName,
+      'Workshop Date & Time': `${workshop.date} (${workshop.time})`,
     });
 
     setIsSubmitting(false);
