@@ -17,6 +17,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { PolicyModal } from '../components/PolicyModal';
+import { submitWeb3Form } from '../utils/web3forms';
 
 // Social Icons (Crisp, clean SVGs)
 const InstagramIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
@@ -269,6 +270,8 @@ export const CompanyHomePage: React.FC = () => {
 
   // Career Application Form state
   const [careerSubmitted, setCareerSubmitted] = useState(false);
+  const [careerSubmitting, setCareerSubmitting] = useState(false);
+  const [careerError, setCareerError] = useState<string | null>(null);
   const [careerData, setCareerData] = useState({
     name: '',
     email: '',
@@ -280,6 +283,8 @@ export const CompanyHomePage: React.FC = () => {
 
   // Contact Form state
   const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [contactError, setContactError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -290,32 +295,64 @@ export const CompanyHomePage: React.FC = () => {
   // Proof Video Modal state
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
-  const handleCareerSubmit = (e: React.FormEvent) => {
+  const handleCareerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setCareerSubmitted(true);
+    setCareerSubmitting(true);
+    setCareerError(null);
 
-    // Format mailto payload
-    const subject = encodeURIComponent(`Career Application: ${careerData.role} - ${careerData.name}`);
-    const body = encodeURIComponent(
-      `Candidate Name: ${careerData.name}\n` +
-      `Email Address: ${careerData.email}\n` +
-      `Phone Number: ${careerData.phone}\n` +
-      `Applied Role: ${careerData.role}\n` +
-      `Portfolio / Work Samples: ${careerData.portfolio || 'Not provided'}\n\n` +
-      `Cover Note / Background:\n${careerData.message || 'No additional note provided.'}`
-    );
+    const result = await submitWeb3Form({
+      subject: `New Career Application: ${careerData.role} - ${careerData.name}`,
+      from_name: 'LevLox Careers Portal',
+      'Candidate Name': careerData.name,
+      'Email Address': careerData.email,
+      'Phone Number': careerData.phone,
+      'Applied Role': careerData.role,
+      'Portfolio / Work Samples': careerData.portfolio || 'Not provided',
+      'Cover Note / Background': careerData.message || 'No additional note provided.',
+    });
 
-    // Trigger direct email to company
-    window.open(`mailto:levloxtech@gmail.com?subject=${subject}&body=${body}`, '_blank');
+    setCareerSubmitting(false);
+
+    if (result.success) {
+      setCareerSubmitted(true);
+      setCareerData({
+        name: '',
+        email: '',
+        phone: '',
+        role: 'AI Engineer',
+        portfolio: '',
+        message: '',
+      });
+    } else {
+      setCareerError(result.message || 'Submission failed. Please try again.');
+    }
   };
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setContactSubmitted(true);
-    setTimeout(() => {
-      setContactSubmitted(false);
+    setContactSubmitting(true);
+    setContactError(null);
+
+    const result = await submitWeb3Form({
+      subject: `New Inquiry from ${formData.name}`,
+      from_name: 'LevLox Website Contact',
+      'Sender Name': formData.name,
+      'Email Address': formData.email,
+      'Phone Number': formData.phone,
+      'Message': formData.message,
+    });
+
+    setContactSubmitting(false);
+
+    if (result.success) {
+      setContactSubmitted(true);
       setFormData({ name: '', email: '', phone: '', message: '' });
-    }, 4500);
+      setTimeout(() => {
+        setContactSubmitted(false);
+      }, 5000);
+    } else {
+      setContactError(result.message || 'Failed to send message. Please try again.');
+    }
   };
 
   return (
@@ -834,13 +871,21 @@ export const CompanyHomePage: React.FC = () => {
                     />
                   </div>
 
+                  {/* Error Notification */}
+                  {careerError && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-medium">
+                      {careerError}
+                    </div>
+                  )}
+
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full py-4 px-6 rounded-full bg-black hover:bg-slate-800 text-white font-bold text-xs sm:text-sm shadow-xl transition-all hover:scale-[1.01] active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                    disabled={careerSubmitting}
+                    className="w-full py-4 px-6 rounded-full bg-black hover:bg-slate-800 disabled:bg-slate-400 text-white font-bold text-xs sm:text-sm shadow-xl transition-all hover:scale-[1.01] active:scale-95 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <Send className="w-4 h-4" />
-                    <span>Send Application to levloxtech@gmail.com</span>
+                    <span>{careerSubmitting ? 'Sending Application...' : 'Submit Application Directly'}</span>
                   </button>
                 </form>
               )}
@@ -1526,11 +1571,18 @@ export const CompanyHomePage: React.FC = () => {
                     />
                   </div>
 
+                  {contactError && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-medium">
+                      {contactError}
+                    </div>
+                  )}
+
                   <button
                     type="submit"
-                    className="w-full py-3.5 px-4 rounded-xl bg-black hover:bg-slate-800 text-white font-extrabold text-xs shadow-md transition-all hover:scale-[1.01] cursor-pointer"
+                    disabled={contactSubmitting}
+                    className="w-full py-3.5 px-4 rounded-xl bg-black hover:bg-slate-800 disabled:bg-slate-400 text-white font-extrabold text-xs shadow-md transition-all hover:scale-[1.01] cursor-pointer disabled:cursor-not-allowed"
                   >
-                    Send Message &rarr;
+                    {contactSubmitting ? 'Sending Message...' : 'Send Message →'}
                   </button>
                 </form>
               )}

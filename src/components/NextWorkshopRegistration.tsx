@@ -16,6 +16,7 @@ import {
 import { useTheme } from '../context/ThemeContext';
 import { useAdminContent } from '../context/AdminContentContext';
 import { DEFAULT_WORKSHOP } from '../data/workshopData';
+import { submitWeb3Form } from '../utils/web3forms';
 
 export const NextWorkshopRegistration: React.FC = () => {
   const { currentMember } = useTheme();
@@ -62,15 +63,34 @@ export const NextWorkshopRegistration: React.FC = () => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setSubmissionError(null);
+
+    const result = await submitWeb3Form({
+      subject: `Workshop Registration: ${workshop.title} - ${formData.name}`,
+      from_name: `LevLox Workshop (${currentMember.memberName})`,
+      'Registrant Name': formData.name,
+      'Email Address': formData.email,
+      'Phone Number': formData.mobile,
+      'Profile Status': formData.roleType === 'working_professional' ? 'Working Professional' : 'Student / Aspirant',
+      'Workshop Title': workshop.title,
+      'Workshop Date': workshop.date,
+      'Instructor': instructorName,
+    });
+
+    setIsSubmitting(false);
+
+    if (result.success) {
       setIsSubmitted(true);
-    }, 900);
+    } else {
+      setSubmissionError(result.message || 'Registration failed. Please try again.');
+    }
   };
 
   return (
@@ -418,6 +438,12 @@ export const NextWorkshopRegistration: React.FC = () => {
                       </button>
                     </div>
                   </div>
+
+                  {submissionError && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-600 rounded-xl text-xs font-mono text-center">
+                      {submissionError}
+                    </div>
+                  )}
 
                   {/* Primary CTA Button */}
                   <button

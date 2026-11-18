@@ -5,6 +5,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { submitWeb3Form } from '../utils/web3forms';
 
 interface PackageApplicationProps {
   initialPackage?: '1 TO FOUR' | 'WAITING LIST';
@@ -99,15 +100,37 @@ export const PackageApplication: React.FC<PackageApplicationProps> = ({
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setSubmissionError(null);
+
+    const result = await submitWeb3Form({
+      subject: `New Cohort Application: ${selectedPackage} - ${formData.name}`,
+      from_name: `LevLox ${currentMember.memberName} Funnel`,
+      'Candidate Name': formData.name,
+      'Phone Number': formData.phone,
+      'Email Address': formData.email,
+      'Selected Track': selectedPackage,
+      'Assigned Mentor': currentMember.memberName,
+      'Work Experience': formData.workExperience,
+      'Current LPA': formData.currentLpa,
+      'Can Commit 2 Hours Daily': formData.spend2HoursDaily,
+      'Ready to Invest in Career': formData.investInCareer,
+      'Refund Policy Acknowledged': formData.acceptRefundPolicy ? 'Yes' : 'No',
+    });
+
+    setIsSubmitting(false);
+
+    if (result.success) {
       setIsSubmitted(true);
-    }, 1500);
+    } else {
+      setSubmissionError(result.message || 'Application submission failed. Please try again.');
+    }
   };
 
   return (
@@ -497,6 +520,12 @@ export const PackageApplication: React.FC<PackageApplicationProps> = ({
                   <p className="text-xs text-red-500 pl-7">{errors.acceptRefundPolicy}</p>
                 )}
               </div>
+
+              {submissionError && (
+                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 text-xs font-mono text-center">
+                  {submissionError}
+                </div>
+              )}
 
               {/* CTA: "BOOK MY CALL" */}
               <button
